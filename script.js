@@ -69,8 +69,8 @@ const account2 = {
     "2020-06-15T18:49:59.371Z",
     "2020-07-30T12:01:20.894Z",
   ],
-  currency: "BDT",
-  locale: "en-US",
+  currency: "USD",
+  locale: "de-DE",
 };
 
 const account3 = {
@@ -89,7 +89,7 @@ const account3 = {
     "2020-06-25T18:49:59.371Z",
     "2020-07-26T12:01:20.894Z",
   ],
-  currency: "USD",
+  currency: "EUR",
   locale: "ar-SY",
 };
 
@@ -159,6 +159,18 @@ const newArr = arr.sort((a, b) =>{
 })
 console.log(newArr)
 
+const cur = 2500;
+const option = {
+  style: 'currency',
+  currency: 'USD',
+   currencyDisplay: 'narrowSymbol'
+
+}
+console.log( new Intl.NumberFormat('en-us',option).format(cur))
+console.log(new Intl.NumberFormat('de-DE',option).format(cur));
+console.log(new Intl.NumberFormat('ar-SY',option).format(cur))
+
+
 /////////////////////////////////////////////
 
 // Date Calculation;
@@ -179,10 +191,32 @@ const movementDateFormate = function(date, locale){
   }
   
 };
+
+///////////////////////////////////
+// Timer
+const parsal = ['Pizza', 'Spinach']
+let pizza = setTimeout((ing_1, ing_2) => {
+  console.log(`This is your...${ing_1} and ${ing_2}`)
+}, 3000, ...parsal);
+console.log('fetching Data...')
+if(parsal.includes('Pizza'))clearInterval(pizza)
+ let counter =100;
+const countDownTimer = setInterval(() => {
+counter--;
+// labelTimer.textContent = counter
+// const min = counter/60 
+// const sec = counter/60 *60
+// console.log(`${Math.round(min)}/${Math.round(sec)}`)
+ },1000)
+
+    
+
+////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
  // FUNCTION FOR CHANGING CURRENCY;
+
  const formatMov = function(value, locale, currency){
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat(locale, { //local: en-Us
     style: 'currency',
     currency: currency
   }).format(value)
@@ -266,7 +300,11 @@ return accs;
     }
     // displaySummary(accounts)
 
-    //UPDATE UI;
+
+    /////////////////////////////////////////////////
+    // UPDATE UI;
+     let timer; // defining timer;
+
     const updateUI = function(acc){
      console.log(acc)
 
@@ -277,9 +315,48 @@ return accs;
     calcBalance(acc);
      
     // DISPLAY BALANCE SUMMARY;
-    displaySummary(acc)    
+    displaySummary(acc);
 
+    // If timer alredy exist so it will remove and new will start
+    if(timer) clearInterval(timer)
+    setLogOutTimer();// Then this new timer will call
     }
+
+
+    ////////////////////////////
+    // LogOut Timer;
+    const setLogOutTimer = function () {
+      // define a varible and set time;
+      let count = 300;
+    //   //countDown function;
+      return timer = setInterval(function () {
+        // conversion to min and to sec;
+        const min = String(Math.trunc(count / 60)).padStart(2, 0);// For padstart first we should convert it into string;
+        const sec = String((count % 60)).padStart(2,0);// For second we use remaider operator because 120 sec is => 02:00;
+
+        //In each Call print the remaing time;
+        labelTimer.textContent = `${min}:${sec}`;
+
+       // when count become 0, timer will clear and acc will LogOut
+       if(count === 0){
+        //After completion timer will remove
+        clearInterval(timer)
+
+        currentAccount = {}; // To empty the whole object
+    containerApp.style.opacity = '0';
+    labelWelcome.textContent = 'Log in to get started';
+    window.scrollTo(0,0);// move page back to upword;
+    inputLoginUsername.focus();
+    console.log('You have been logOut:',currentAccount)
+       }
+
+       //Decreas 
+       count --;
+
+       },1000)
+        
+     }
+     
     //////////////////////////////////
     //Current date
     // const currentDate = function(date){
@@ -372,6 +449,7 @@ btnClose.addEventListener('click',function(e){
     currentAccount = {}; // To empty the whole object;
     inputCloseUsername.value = inputClosePin.value = '';
     containerApp.style.opacity = '0';
+    labelWelcome.textContent = 'Log in to get started';
     window.scrollTo(0,0);// move page back to upword;
    
     inputLoginUsername.focus();
